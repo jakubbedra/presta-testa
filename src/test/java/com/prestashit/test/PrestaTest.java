@@ -18,7 +18,7 @@ public class PrestaTest {
 
     private final Random r;
 
-    private final int MAX_PRODUCT_QUANTITY = 10;
+    private static final int MAX_PRODUCT_QUANTITY = 10;
 
     public PrestaTest() {
         this.r = new Random();
@@ -33,10 +33,7 @@ public class PrestaTest {
         addProductsToCart(driver);
         createUser(driver);
         checkout(driver);
-        checkShipmentStatus(); //todo
-
-        Thread.sleep(2137*10);
-        driver.quit();
+        checkShipmentStatus(driver);
     }
 
     private void addProductsToCart(WebDriver driver) throws InterruptedException {
@@ -62,12 +59,12 @@ public class PrestaTest {
 
     private void addProductToCart(int ind, WebDriver driver) throws InterruptedException {
         String url = driver.getCurrentUrl();
+
         WebElement product = driver.findElement(By.xpath("//div[@id=\"js-product-list\"]/div[@class=\"products row\"]"))
                 .findElements(By.xpath("//div[@class=\"product\"]")).get(ind);
 
-        System.out.println("DDDD(Dupa Debug Driven Development): " + product.getLocation());
         product.findElement(By.tagName("a")).click();
-        Select select = new Select(driver.findElement(By.id("group_5")));    //change later on when other groups will be removed!!!!
+        Select select = new Select(driver.findElement(By.id("group_5")));
         select.selectByValue("27");
         driver.findElement(By.id("quantity_wanted")).sendKeys(Keys.chord(Keys.CONTROL, "a"), r.nextInt(MAX_PRODUCT_QUANTITY) + "");
 
@@ -94,9 +91,9 @@ public class PrestaTest {
         Thread.sleep(500);
         driver.findElement(By.id("field-lastname")).sendKeys("Paweł");
         Thread.sleep(500);
-        driver.findElement(By.id("field-email")).sendKeys("jp2" + r.nextDouble() + "@gmdmail.com");
+        driver.findElement(By.id("field-email")).sendKeys("jp2" + r.nextInt() + "@example.com");
         Thread.sleep(500);
-        driver.findElement(By.id("field-password")).sendKeys("jotpedwaXD");
+        driver.findElement(By.id("field-password")).sendKeys("qwerty1234");
         Thread.sleep(500);
         driver.findElement(By.id("field-birthday")).sendKeys("2005-04-02");
         Thread.sleep(500);
@@ -126,6 +123,11 @@ public class PrestaTest {
         driver.findElement(By.id("conditions_to_approve[terms-and-conditions]")).click();
         driver.findElement(By.xpath("//div[@id=\"payment-confirmation\"]/div[@class=\"ps-shown-by-js\"]/button")).click();
 
+    }
+
+    private void checkShipmentStatus(WebDriver driver) {
+        driver.findElement(By.xpath("//div[@id=\"_desktop_user_info\"]/div/a[@class=\"account\"]")).click();
+        driver.findElement(By.xpath("//a[@id=\"history-link\"]")).click();
     }
 
 }
